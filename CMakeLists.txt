@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(utilitybelt)
+project(ubelt)
 
 set (LIB_VERSION_MAJOR 0)
 set (LIB_VERSION_MINOR 1)
