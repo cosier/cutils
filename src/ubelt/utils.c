@@ -166,3 +166,15 @@ void util_cat(char** orig, char* src) {
     *orig = --buf;
     // return --buf;
 }
+
+const char *util_home_dir() {
+    const char *homedir;
+
+    // Check environment variable first,
+    // then fallback to passwd definition.
+    if ((homedir = getenv("HOME")) == NULL) {
+        homedir = getpwuid(getuid())->pw_dir;
+    }
+
+    return homedir;
+}

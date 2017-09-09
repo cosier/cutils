@@ -28,6 +28,8 @@ bool util_contains_bit(unsigned val, unsigned bitindex);
 int util_tokenize(char* src, char* delim, char** result);
 void util_cat(char** buf, char* src);
 
+const char* util_home_dir();
+
 //////////////////////////////////////////////////////////
 // HERE BE APPLES
 #ifdef __APPLE__
