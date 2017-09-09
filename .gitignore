@@ -9,6 +9,8 @@ Testing
 vendor
 vendor/build
 
+bin/ubelt
+
 
 # Rtags
 compile_commands.json
