@@ -26,8 +26,5 @@ set(lib ${APP_LIB_NAME})
 # Link up main executable with our Library: libdimappio
 target_link_libraries( test-ubelt ${lib} ub_tests)
 
-# Enable CTests suite reporting
-enable_testing ()
-
 add_test(NAME test-ubelt COMMAND test-ubelt)
 

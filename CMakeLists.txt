@@ -26,6 +26,8 @@ endforeach( PATH )
 # Build project core as a library
 add_library(ubelt STATIC ${SRC_LIB})
 
+# Enable CTests suite reporting
+enable_testing ()
 add_subdirectory("tests")
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
