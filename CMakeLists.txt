@@ -13,21 +13,21 @@ set( LIB_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 # Treat all warnings as intense errors.
 set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
 
-file(GLOB_RECURSE SRC_LIB src/*.c src/*.h)
-
-# Remove tmp files from source tree glob
-foreach ( PATH ${SRC_LIB} )
-  string (FIND ${PATH} "#" FOUND)
-  if (NOT ${FOUND} EQUAL -1)
-    list ( REMOVE_ITEM SRC_LIB ${PATH} )
-  endif()
-endforeach( PATH )
+file(GLOB_RECURSE SRC_C src/*.c)
+file(GLOB_RECURSE SRC_H src/*.h)
 
 # Build project core as a library
-add_library(ubelt STATIC ${SRC_LIB})
+add_library(ubelt STATIC ${SRC_C} ${SRC_H})
+# add_library(ubelt SHARED ${SRC_C} ${SRC_H})
 
 # Enable CTests suite reporting
 enable_testing ()
 add_subdirectory("tests")
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
+
+install(TARGETS ubelt DESTINATION lib)
+install(FILES ${SRC_H} DESTINATION include/ubelt)
+
+
+
