@@ -13,7 +13,7 @@ set( LIB_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 # Treat all warnings as intense errors.
 set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
 
-file(GLOB_RECURSE SRC_LIB *.c *.h)
+file(GLOB_RECURSE SRC_LIB src/*.c src/*.h)
 
 # Remove tmp files from source tree glob
 foreach ( PATH ${SRC_LIB} )
