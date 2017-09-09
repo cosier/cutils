@@ -24,7 +24,7 @@ foreach ( PATH ${SRC_LIB} )
 endforeach( PATH )
 
 # Build project core as a library
-add_library(utilitybelt STATIC ${SRC_LIB})
+add_library(ubelt STATIC ${SRC_LIB})
 
 add_subdirectory("tests")
 
