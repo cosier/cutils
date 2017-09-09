@@ -158,11 +158,8 @@ void util_cat(char** orig, char* src) {
         buf++;
     }
 
-    while ((*buf++ = *src++)) {
-    };
+    while ((*buf++ = *src++)) {};
 
-    // buf++;
-    // *buf = 0;
     *orig = --buf;
     // return --buf;
 }
