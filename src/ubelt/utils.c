@@ -55,33 +55,31 @@ void util_print(const char* format, ...) {
 
 void util_debug(const char* format, ...) {
 #ifdef _DEBUG_
-    if (dm_driver_debug_mode) {
-        if (LOG_FILE == NULL) {
-            struct passwd* pw = getpwuid(getuid());
-            char* file = pw->pw_dir;
-            int size = sizeof(char*) * 128;
-            char* file_log = malloc(size);
+  if (LOG_FILE == NULL) {
+    struct passwd* pw = getpwuid(getuid());
+    char* file = pw->pw_dir;
+    int size = sizeof(char*) * 128;
+    char* file_log = malloc(size);
 
-            snprintf(file_log, size, "%s/.midi-mapper.log", file);
-            LOG_FILE = fopen(file_log, "a");
-            free(file_log);
+    snprintf(file_log, size, "%s/.midi-mapper.log", file);
+    LOG_FILE = fopen(file_log, "a");
+    free(file_log);
 
-            if (LOG_FILE == NULL) {
-                util_error("Failed to write to log file");
-                exit(EXIT_FAILURE);
-            }
-        }
-
-        va_list* ap = malloc(sizeof(va_list));
-        va_start(*ap, format);
-        vfprintf(LOG_FILE, format, *ap);
-        va_end(*ap);
-
-        free(ap);
-        fflush(LOG_FILE);
-        /* fclose(LOG_FILE); */
-        /* LOG_FILE = NULL; */
+    if (LOG_FILE == NULL) {
+      util_error("Failed to write to log file");
+      exit(EXIT_FAILURE);
     }
+  }
+
+  va_list* ap = malloc(sizeof(va_list));
+  va_start(*ap, format);
+  vfprintf(LOG_FILE, format, *ap);
+  va_end(*ap);
+
+  free(ap);
+  fflush(LOG_FILE);
+  /* fclose(LOG_FILE); */
+  /* LOG_FILE = NULL; */
 #else
     if (format != NULL) {
       return;
