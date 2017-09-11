@@ -17,7 +17,8 @@ file(GLOB_RECURSE SRC_C src/*.c)
 file(GLOB_RECURSE SRC_H src/*.h)
 
 # Build project core as a library
-add_library(ubelt STATIC ${SRC_C} ${SRC_H})
+add_library(ubeltx STATIC ${SRC_C} ${SRC_H})
+add_library(ubelts SHARED ${SRC_C} ${SRC_H})
 # add_library(ubelt SHARED ${SRC_C} ${SRC_H})
 
 # Enable CTests suite reporting
@@ -26,7 +27,9 @@ add_subdirectory("tests")
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
-install(TARGETS ubelt DESTINATION lib)
+install(TARGETS ubelts DESTINATION lib)
+install(TARGETS ubeltx DESTINATION lib)
+
 install(FILES ${SRC_H} DESTINATION include/ubelt)
 
 
