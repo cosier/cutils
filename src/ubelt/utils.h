@@ -16,9 +16,11 @@
 #include <unistd.h>
 
 extern bool dm_driver_debug_mode;
+
 void util_debug(const char* format, ...);
 void util_error(char* format, ...);
 void util_print(const char* format, ...);
+
 void util_clear(int lines);
 int64_t util_micros();
 

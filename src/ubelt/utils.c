@@ -30,7 +30,9 @@ CFStringRef char_to_cf_string_ref(char* c) {
 
 #endif
 
+#ifdef _DEBUG_
 static FILE* LOG_FILE = NULL;
+#endif
 
 void util_print(const char* format, ...) {
 #ifdef _DEBUG_
@@ -44,6 +46,10 @@ void util_print(const char* format, ...) {
 
     free(ap);
     free(fmt);
+#else
+    if (format != NULL) {
+      return;
+    }
 #endif
 }
 
@@ -75,6 +81,10 @@ void util_debug(const char* format, ...) {
         fflush(LOG_FILE);
         /* fclose(LOG_FILE); */
         /* LOG_FILE = NULL; */
+    }
+#else
+    if (format != NULL) {
+      return;
     }
 #endif
 }
