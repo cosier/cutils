@@ -1,14 +1,6 @@
 #include "utils.h"
 
 #ifdef __APPLE__
-/**
- * Variables for one-time initialization of mach cpu frequency ticks
- */
-static uint64_t mach_freq_num   = 0;
-static uint64_t mach_freq_denom = 0;
-#endif
-
-#ifdef __APPLE__
 char* cf_string_ref_to_chars(CFStringRef string) {
     if (string == NULL) {
         return NULL;
@@ -113,15 +105,6 @@ void util_clear(int lines) {
         printf("\33[1A\r");
         printf("\33[2K\r");
     }
-}
-
-void util_init_clock_frequency () {
-  mach_timebase_info_data_t tb;
-
-  if (mach_timebase_info (&tb) == KERN_SUCCESS && tb.denom != 0) {
-    mach_freq_num   = (uint64_t) tb.numer;
-    mach_freq_denom = (uint64_t) tb.denom;
-  }
 }
 
 int64_t util_micros() {
