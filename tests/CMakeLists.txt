@@ -24,7 +24,7 @@ add_executable(test-ubelt test_main.c)
 set(lib ${APP_LIB_NAME})
 
 # Link up main executable with our Library: libdimappio
-target_link_libraries( test-ubelt ${lib} ub_tests)
+target_link_libraries( test-ubelt ${lib}x ub_tests)
 
 add_test(NAME test-ubelt COMMAND test-ubelt)
 

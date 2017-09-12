@@ -1,6 +1,14 @@
 #include "utils.h"
 
 #ifdef __APPLE__
+/**
+ * Variables for one-time initialization of mach cpu frequency ticks
+ */
+static uint64_t mach_freq_num   = 0;
+static uint64_t mach_freq_denom = 0;
+#endif
+
+#ifdef __APPLE__
 char* cf_string_ref_to_chars(CFStringRef string) {
     if (string == NULL) {
         return NULL;
@@ -107,11 +115,46 @@ void util_clear(int lines) {
     }
 }
 
+void util_init_clock_frequency () {
+  mach_timebase_info_data_t tb;
+
+  if (mach_timebase_info (&tb) == KERN_SUCCESS && tb.denom != 0) {
+    mach_freq_num   = (uint64_t) tb.numer;
+    mach_freq_denom = (uint64_t) tb.denom;
+  }
+}
+
 int64_t util_micros() {
+#ifdef __linux__
     struct timespec tms;
     timespec_get(&tms, TIME_UTC);
     int64_t micros = tms.tv_sec * 1000000;
     return micros += tms.tv_nsec / 1000;
+
+#elif __APPLE__
+    static mach_timebase_info_data_t timebase_info;
+    if (timebase_info.denom == 0) {
+      // Zero-initialization of statics guarantees that denom will be 0 before
+      // calling mach_timebase_info.  mach_timebase_info will never set denom to
+      // 0 as that would be invalid, so the zero-check can be used to determine
+      // whether mach_timebase_info has already been called.  This is
+      // recommended by Apple's QA1398.
+      mach_timebase_info(&timebase_info);
+    }
+
+    /* uint64_t tick_value = mach_absolute_time(); */
+    /* uint64_t value_diff = tick_value - prev_tick_value; */
+    uint64_t result = mach_absolute_time();
+
+    /* To prevent overflow */
+    result /= 1000;
+
+    result *= timebase_info.numer;
+    result /= timebase_info.denom;
+
+    // return microseconds
+    return result;
+#endif
 }
 
 void util_error(char* format, ...) {

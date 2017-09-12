@@ -15,6 +15,14 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef __APPLE__
+#include <mach/mach_time.h>
+#include <mach/mach.h>
+
+#include <stdint.h>
+
+#endif
+
 extern bool dm_driver_debug_mode;
 
 void util_debug(const char* format, ...);

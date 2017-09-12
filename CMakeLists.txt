@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(ubelt)
+project(utility_belt)
 
 set (LIB_VERSION_MAJOR 0)
 set (LIB_VERSION_MINOR 1)
@@ -19,11 +19,21 @@ file(GLOB_RECURSE SRC_H src/*.h)
 # Build project core as a library
 add_library(ubeltx STATIC ${SRC_C} ${SRC_H})
 add_library(ubelts SHARED ${SRC_C} ${SRC_H})
-# add_library(ubelt SHARED ${SRC_C} ${SRC_H})
 
 # Enable CTests suite reporting
 enable_testing ()
 add_subdirectory("tests")
+
+if (APPLE)
+  find_library(cf_lib CoreFoundation)
+  set(LLIBS ${cf_lib})
+
+elseif(UNIX)
+  # We good..
+endif()
+
+target_link_libraries(ubeltx ${LLIBS})
+target_link_libraries(ubelts ${LLIBS})
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
