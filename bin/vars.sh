@@ -5,10 +5,11 @@ BIN="$( cd  "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT=$( cd $BIN/../ && pwd )
 BUILD_DIR=$ROOT/build
 
-APP_LIB_NAME=ubelt
-APP_MAIN_EXE=ubelt
+# Apply some cat sed grep trickery to extract
+# APP_LIB_NAME and APP_EXE_NAME from CMake config.
+APP_LIB_NAME=$(cat $ROOT/CMakeLists.txt \
+                   | grep -m1 APP_LIB_NAME | sed 's/[a-z\s(].*APP_LIB_NAME\s\(.*\))/\1/')
 
-EXE_NAME=$APP_MAIN_EXE
-EXE_LINK=$ROOT/bin/$EXE_NAME
-EXE_BUILD=$BUILD_DIR/src/$EXE_NAME
+EXE_LINK=$ROOT/bin/$APP_LIB_NAME
+EXE_BUILD=$BUILD_DIR/src/$APP_LIB_NAME
 

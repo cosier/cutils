@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(ubelt-tests)
+project(${APP_LIB_NAME}-tests)
 
 # This project uses C11 Standard
 set( CMAKE_C_STANDARD 11 )
@@ -20,11 +20,8 @@ add_library(ub_tests STATIC ${HELPER_LIB})
 
 add_executable(test-ubelt test_main.c)
 
-# Alias a shorter name, shortcut.
-set(lib ${UBELT_LIB_NAME})
-
 # Link up main executable with our Library: libdimappio
-target_link_libraries( test-ubelt ${lib}x ub_tests)
+target_link_libraries( test-ubelt ${APP_LIB_NAME}x ub_tests)
 
 add_test(NAME test-ubelt COMMAND test-ubelt)
 

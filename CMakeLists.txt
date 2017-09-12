@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.6)
-project(utility_belt)
-set (UBELT_LIB_NAME ubelt)
+set (APP_LIB_NAME ubelt)
+
+project(${APP_LIB_NAME}_project)
 
 set (LIB_VERSION_MAJOR 0)
 set (LIB_VERSION_MINOR 1)
@@ -18,12 +19,16 @@ file(GLOB_RECURSE SRC_C src/*.c)
 file(GLOB_RECURSE SRC_H src/*.h)
 
 # Build project core as a library
-add_library(ubeltx STATIC ${SRC_C} ${SRC_H})
-add_library(ubelts SHARED ${SRC_C} ${SRC_H})
+add_library(${APP_LIB_NAME}x STATIC ${SRC_C} ${SRC_H})
+add_library(${APP_LIB_NAME}s SHARED ${SRC_C} ${SRC_H})
+
+set( ENABLE_TESTS $ENV{ENABLE_UB_TESTS} )
 
 # Enable CTests suite reporting
-enable_testing ()
-add_subdirectory("tests")
+if ("${ENABLE_TESTS}" STREQUAL "true")
+  enable_testing ()
+  add_subdirectory("tests")
+endif()
 
 if (APPLE)
   find_library(cf_lib CoreFoundation)
@@ -33,15 +38,15 @@ elseif(UNIX)
   # We good..
 endif()
 
-target_link_libraries(ubeltx ${UB_LIBS})
-target_link_libraries(ubelts ${UB_LIBS})
+target_link_libraries(${APP_LIB_NAME}x ${UB_LIBS})
+target_link_libraries(${APP_LIB_NAME}s ${UB_LIBS})
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
-install(TARGETS ubelts DESTINATION lib)
-install(TARGETS ubeltx DESTINATION lib)
+install(TARGETS ${APP_LIB_NAME}s DESTINATION lib)
+install(TARGETS ${APP_LIB_NAME}x DESTINATION lib)
 
-install(FILES ${SRC_H} DESTINATION include/ubelt)
+install(FILES ${SRC_H} DESTINATION include/${APP_LIB_NAME})
 
 
 

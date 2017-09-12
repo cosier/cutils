@@ -18,6 +18,10 @@ elif [[ "$DEBUG" == true ]]; then
   BUILD_TYPE=Debug
 fi
 
+# When building from this source tree;
+# Always testing, is reasonable.
+ENABLE_UB_TEST=true
+
 # Fallback to Debug build if no explicit type found
 if [ -z "$BUILD_TYPE" ]; then
  BUILD_TYPE=Debug
@@ -43,6 +47,7 @@ if [[ ! -f $BUILD_DIR/Makefile ]]; then
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
     -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
     -DAPP_LIB_NAME=$APP_LIB_NAME \
+    -DENABLE_UB_TESTS=$ENABLE_UB_TEST \
     ..
 
   if [ ! $? -eq 0 ]; then
@@ -56,8 +61,3 @@ if [ ! $? -eq 0 ]; then
   echo "Make failed"
   exit 1
 fi
-
-if [ ! -f $EXE_LINK ]; then
-  ln -sf $EXE_BUILD $EXE_LINK
-fi
-
