@@ -21,7 +21,7 @@ add_library(ub_tests STATIC ${HELPER_LIB})
 add_executable(test-ubelt test_main.c)
 
 # Alias a shorter name, shortcut.
-set(lib ${APP_LIB_NAME})
+set(lib ${UBELT_LIB_NAME})
 
 # Link up main executable with our Library: libdimappio
 target_link_libraries( test-ubelt ${lib}x ub_tests)

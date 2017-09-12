@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 project(utility_belt)
+set (UBELT_LIB_NAME ubelt)
 
 set (LIB_VERSION_MAJOR 0)
 set (LIB_VERSION_MINOR 1)
@@ -26,14 +27,14 @@ add_subdirectory("tests")
 
 if (APPLE)
   find_library(cf_lib CoreFoundation)
-  set(LLIBS ${cf_lib})
+  set(UB_LIBS ${cf_lib})
 
 elseif(UNIX)
   # We good..
 endif()
 
-target_link_libraries(ubeltx ${LLIBS})
-target_link_libraries(ubelts ${LLIBS})
+target_link_libraries(ubeltx ${UB_LIBS})
+target_link_libraries(ubelts ${UB_LIBS})
 
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
