@@ -47,12 +47,7 @@ bool util_contains_bit(unsigned val, unsigned bitindex);
 
 int util_tokenize(char* src, char* delim, char** result);
 void util_cat(char** buf, char* src);
-
-#ifdef _MSVC_VER
-const WCHAR* util_home_dir();
-#else
-const char* util_home_dir();
-#endif
+char* util_home_dir();
 
 //////////////////////////////////////////////////////////
 // HERE BE APPLES

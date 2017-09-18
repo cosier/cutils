@@ -32,6 +32,13 @@ CFStringRef char_to_cf_string_ref(char* c) {
 
 #ifdef _DEBUG_
 static FILE* LOG_FILE = NULL;
+
+#ifdef APP_NAME
+#define APP_LOG_NAME APP_NAME
+#else
+#define APP_LOG_NAME "debug_belt"
+#endif
+
 #endif
 
 void util_print(const char* format, ...) {
@@ -56,12 +63,11 @@ void util_print(const char* format, ...) {
 void util_debug(const char* format, ...) {
 #ifdef _DEBUG_
   if (LOG_FILE == NULL) {
-    struct passwd* pw = getpwuid(getuid());
-    char* file = pw->pw_dir;
+    char* file = util_home_dir();
     int size = sizeof(char*) * 128;
     char* file_log = malloc(size);
 
-    snprintf(file_log, size, "%s/.midi-mapper.log", file);
+    snprintf(file_log, size, "%s/." APP_LOG_NAME ".log", file);
     LOG_FILE = fopen(file_log, "a");
     free(file_log);
 
@@ -192,24 +198,22 @@ void util_cat(char** orig, char* src) {
     // return --buf;
 }
 
-#ifdef _MSVC_VER
-const WCHAR* util_home_dir() {
-    const char *homedir;
 
+char* util_home_dir() {
+#ifdef _MSVC_VER
     // Check environment variable first,
     // then fallback to passwd definition.
-    WCHAR* path = calloc(MAX_PATH, sizeof(WCHAR));
+    char *ret = calloc(MAX_PATH, sizeof(char*));
+    WCHAR* path = calloc(MAX_PATH, sizeof(WCHAR*));
+
     if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, *path))) {
-        return path;
+        return sprintf(ret, "%ws", path);
+    } else
+    {
+        return NULL;
     }
-
-    return NULL;
-}
-
 #endif
-
-#ifdef __GNUC__
-const char* util_home_dir() {
+#ifdef _GNU_C_
     const char *homedir;
 
     // Check environment variable first,
@@ -218,7 +222,8 @@ const char* util_home_dir() {
         homedir = getpwuid(getuid())->pw_dir;
     }
 
-    return homedir;
-}
-
+    return strdup(homedir);
 #endif
+
+    return NULL;
+}
