@@ -7,19 +7,29 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <time.h>
 
 #include <assert.h>
-#include <pwd.h>
+
 #include <sys/types.h>
+#include <stdint.h>
+
+#ifdef _MSVC_VER
+#include <Shlobj.h> 
+#endif
+
+#ifdef __GNUC__
+#include <pwd.h>
 #include <unistd.h>
+#endif
 
 #ifdef __APPLE__
 #include <mach/mach_time.h>
 #include <mach/mach.h>
 
-#include <stdint.h>
+
 
 #endif
 
@@ -38,7 +48,11 @@ bool util_contains_bit(unsigned val, unsigned bitindex);
 int util_tokenize(char* src, char* delim, char** result);
 void util_cat(char** buf, char* src);
 
+#ifdef _MSVC_VER
+const WCHAR* util_home_dir();
+#else
 const char* util_home_dir();
+#endif
 
 //////////////////////////////////////////////////////////
 // HERE BE APPLES

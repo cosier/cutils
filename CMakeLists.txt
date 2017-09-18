@@ -13,7 +13,9 @@ set( CMAKE_C_STANDARD 11 )
 set( LIB_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Treat all warnings as intense errors.
+if(NOT MSVC)
 set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -Wextra")
+endif()
 
 file(GLOB_RECURSE SRC_C src/*.c)
 file(GLOB_RECURSE SRC_H src/*.h)

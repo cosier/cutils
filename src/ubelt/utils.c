@@ -137,14 +137,17 @@ int64_t util_micros() {
 
     // return microseconds
     return result;
+#else
+    return 0;
 #endif
 }
 
 void util_error(char* format, ...) {
     va_list ap;
     va_start(ap, format);
-    char* fmt = malloc(sizeof(char*) * 64);
-    sprintf(fmt, "%s%s%s", RED, format, RESET);
+    size_t size = 64 * sizeof(char *);
+    char* fmt = calloc(64, sizeof(char*));
+    snprintf(fmt, size, "%s%s%s", RED, format, RESET);
     vfprintf(stderr, fmt, ap);
     va_end(ap);
     putc('\n', stderr);
@@ -158,16 +161,7 @@ int util_tokenize(char* src, char* delim, char** result) {
     char* container = NULL;
     char* token = NULL;
     int i = 0;
-    do {
-        token = strtok_r(src, delim, &container);
-        src = NULL;
-        if (token != NULL) {
-            result[i] = strdup(token);
-            i++;
-        }
-    } while (token != NULL);
-    free(token);
-
+    // TODO: 
     return i;
 }
 
@@ -198,7 +192,24 @@ void util_cat(char** orig, char* src) {
     // return --buf;
 }
 
-const char *util_home_dir() {
+#ifdef _MSVC_VER
+const WCHAR* util_home_dir() {
+    const char *homedir;
+
+    // Check environment variable first,
+    // then fallback to passwd definition.
+    WCHAR* path = calloc(MAX_PATH, sizeof(WCHAR));
+    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, *path))) {
+        return path;
+    }
+
+    return NULL;
+}
+
+#endif
+
+#ifdef __GNUC__
+const char* util_home_dir() {
     const char *homedir;
 
     // Check environment variable first,
@@ -209,3 +220,5 @@ const char *util_home_dir() {
 
     return homedir;
 }
+
+#endif
