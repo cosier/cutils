@@ -44,7 +44,7 @@ static FILE* LOG_FILE = NULL;
 void ub_print(const char* format, ...) {
 #ifdef _DEBUG_
     va_list* ap = malloc(sizeof(va_list));
-    char* fmt = malloc(sizeof(char*) * 64);
+    char* fmt = malloc(sizeof(char) * 64);
 
     va_start(*ap, format);
     sprintf(fmt, "%s%s%s", RED, format, RESET);
@@ -151,8 +151,8 @@ int64_t ub_micros() {
 void ub_error(char* format, ...) {
     va_list ap;
     va_start(ap, format);
-    size_t size = 64 * sizeof(char *);
-    char* fmt = calloc(64, sizeof(char*));
+    size_t size = 64 * sizeof(char);
+    char* fmt = calloc(64, sizeof(char));
     snprintf(fmt, size, "%s%s%s", RED, format, RESET);
     vfprintf(stderr, fmt, ap);
     va_end(ap);
@@ -165,7 +165,7 @@ bool ub_contains_bit(unsigned val, unsigned bitindex) {
 
 ub_tokens* ub_tokenize(const char* src, char delim) {
     int buf_size = strlen(src);
-    char** buf = malloc(sizeof(char**) * buf_size + 10);
+    char** buf = malloc(sizeof(char*) * buf_size + 10);
     int tokens = 0;
     const char* cursor = src;
 
@@ -189,7 +189,7 @@ ub_tokens* ub_tokenize(const char* src, char delim) {
                 ++cursor;
                 break;
             } else {
-                int ap_size = sizeof(char*) * 4;
+                int ap_size = sizeof(char) * 4;
                 char* appendage = malloc(ap_size);
                 if (token != NULL) {
                     snprintf(appendage, ap_size, "%s%c", token, *cursor);
@@ -217,7 +217,7 @@ ub_tokens* ub_tokenize(const char* src, char delim) {
     // return buf;
     ub_tokens* result = malloc(sizeof(ub_tokens));
 
-    char** mbuf = malloc(sizeof(char**) * tokens + 1);
+    char** mbuf = malloc(sizeof(char*) * tokens + 1);
     for (int b = 0; b < tokens; ++b) {
         mbuf[b] = buf[b];
     }
@@ -266,7 +266,8 @@ char *ub_home_dir() {
     WCHAR* path = calloc(MAX_PATH, sizeof(WCHAR*));
 
     if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, *path))) {
-        return sprintf(ret, "%ws", path);
+        sprintf(ret, "%ws", path);
+        return ret;
     } else
     {
         return NULL;
