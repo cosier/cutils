@@ -1,6 +1,10 @@
 #ifndef MIDI_UTILS_H
 #define MIDI_UTILS_H
 
+#ifdef WINDOWS_OS
+#include <Windows.h>
+#endif
+
 #include "colors.h"
 
 #include <stdarg.h>
