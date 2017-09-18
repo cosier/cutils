@@ -63,7 +63,7 @@ void ub_print(const char* format, ...) {
 void ub_debug(const char* format, ...) {
 #ifdef _DEBUG_
   if (LOG_FILE == NULL) {
-    char* file = util_home_dir();
+    char* file = ub_home_dir();
     int size = sizeof(char*) * 128;
     char* file_log = malloc(size);
 
