@@ -265,7 +265,7 @@ char *ub_home_dir() {
     char *ret = calloc(MAX_PATH, sizeof(char*));
     WCHAR* path = calloc(MAX_PATH, sizeof(WCHAR*));
 
-    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, *path))) {
+    if (SUCCEEDED(SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, path))) {
         sprintf(ret, "%ws", path);
         return ret;
     } else
