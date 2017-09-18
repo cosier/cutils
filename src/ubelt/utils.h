@@ -16,42 +16,45 @@
 #include <sys/types.h>
 #include <stdint.h>
 
-#ifdef _MSVC_VER
-#include <Shlobj.h> 
+#ifdef WINDOWS_OS
+#include <Shlobj.h>
 #endif
 
-#ifdef __GNUC__
+#ifdef UNIX_OS
 #include <pwd.h>
 #include <unistd.h>
 #endif
 
-#ifdef __APPLE__
+#ifdef APPLE_OS
 #include <mach/mach_time.h>
 #include <mach/mach.h>
-
-
-
 #endif
 
 extern bool dm_driver_debug_mode;
 
-void util_debug(const char* format, ...);
-void util_error(char* format, ...);
-void util_print(const char* format, ...);
+typedef struct ub_tokens {
+    char** tokens;
+    int count;
+} ub_tokens;
 
-void util_clear(int lines);
-int64_t util_micros();
+void ub_debug(const char* format, ...);
+void ub_error(char* format, ...);
+void ub_print(const char* format, ...);
 
-int util_count_lines(char* input);
-bool util_contains_bit(unsigned val, unsigned bitindex);
+void ub_clear(int lines);
+int64_t ub_micros();
 
-int util_tokenize(char* src, char* delim, char** result);
-void util_cat(char** buf, char* src);
-char* util_home_dir();
+int ub_count_lines(char* input);
+bool ub_contains_bit(unsigned val, unsigned bitindex);
+
+ub_tokens* ub_tokenize(const char* src, char delim);
+void ub_cat(char** buf, char* src);
+
+char* ub_home_dir();
 
 //////////////////////////////////////////////////////////
 // HERE BE APPLES
-#ifdef __APPLE__
+#ifdef APPLE_OS
 #include <CoreFoundation/CoreFoundation.h>
 
 char* cf_string_ref_to_chars(CFStringRef string);

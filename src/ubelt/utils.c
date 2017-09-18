@@ -1,6 +1,6 @@
 #include "utils.h"
 
-#ifdef __APPLE__
+#ifdef APPLE_OS
 char* cf_string_ref_to_chars(CFStringRef string) {
     if (string == NULL) {
         return NULL;
@@ -41,7 +41,7 @@ static FILE* LOG_FILE = NULL;
 
 #endif
 
-void util_print(const char* format, ...) {
+void ub_print(const char* format, ...) {
 #ifdef _DEBUG_
     va_list* ap = malloc(sizeof(va_list));
     char* fmt = malloc(sizeof(char*) * 64);
@@ -60,7 +60,7 @@ void util_print(const char* format, ...) {
 #endif
 }
 
-void util_debug(const char* format, ...) {
+void ub_debug(const char* format, ...) {
 #ifdef _DEBUG_
   if (LOG_FILE == NULL) {
     char* file = util_home_dir();
@@ -72,7 +72,7 @@ void util_debug(const char* format, ...) {
     free(file_log);
 
     if (LOG_FILE == NULL) {
-      util_error("Failed to write to log file");
+      ub_error("Failed to write to log file");
       exit(EXIT_FAILURE);
     }
   }
@@ -93,7 +93,7 @@ void util_debug(const char* format, ...) {
 #endif
 }
 
-int util_count_lines(char* input) {
+int ub_count_lines(char* input) {
     int i = 0;
     int lines = 1;
     while (input[i] != '\0') {
@@ -105,7 +105,7 @@ int util_count_lines(char* input) {
     return lines;
 }
 
-void util_clear(int lines) {
+void ub_clear(int lines) {
     for (int i = 0; i < lines; ++i) {
         printf("\33[2K\r");
         printf("\33[1A\r");
@@ -113,14 +113,14 @@ void util_clear(int lines) {
     }
 }
 
-int64_t util_micros() {
-#ifdef __linux__
+int64_t ub_micros() {
+#ifdef LINUX_OS
     struct timespec tms;
     timespec_get(&tms, TIME_UTC);
     int64_t micros = tms.tv_sec * 1000000;
     return micros += tms.tv_nsec / 1000;
 
-#elif __APPLE__
+#elif APPLE_OS
     static mach_timebase_info_data_t timebase_info;
     if (timebase_info.denom == 0) {
       // Zero-initialization of statics guarantees that denom will be 0 before
@@ -148,7 +148,7 @@ int64_t util_micros() {
 #endif
 }
 
-void util_error(char* format, ...) {
+void ub_error(char* format, ...) {
     va_list ap;
     va_start(ap, format);
     size_t size = 64 * sizeof(char *);
@@ -159,16 +159,76 @@ void util_error(char* format, ...) {
     putc('\n', stderr);
 }
 
-bool util_contains_bit(unsigned val, unsigned bitindex) {
+bool ub_contains_bit(unsigned val, unsigned bitindex) {
     return (val & (1 << bitindex)) != 0;
 }
 
-int util_tokenize(char* src, char* delim, char** result) {
-    char* container = NULL;
-    char* token = NULL;
-    int i = 0;
-    // TODO: 
-    return i;
+ub_tokens* ub_tokenize(const char* src, char delim) {
+    int buf_size = strlen(src);
+    char** buf = malloc(sizeof(char**) * buf_size + 10);
+    int tokens = 0;
+    const char* cursor = src;
+
+    // printf("ub_token_split(%s) on %c\n", cursor, delim);
+
+    for (int i = 0; i < buf_size; ++i) {
+        int token_tracker = 0;
+        char* token = NULL;
+
+        if (!*cursor) {
+            break;
+        }
+
+        while (*cursor) {
+            if (*cursor == ' ') {
+                // skip whitespace in the parser
+                ++cursor;
+            } else if (*cursor == delim) {
+                // printf("cursor(%c) == delim(%c)\n", *cursor, delim);
+                // printf("token finished: %s\n", token);
+                ++cursor;
+                break;
+            } else {
+                int ap_size = sizeof(char*) * 4;
+                char* appendage = malloc(ap_size);
+                if (token != NULL) {
+                    snprintf(appendage, ap_size, "%s%c", token, *cursor);
+                    free(token);
+                } else {
+                    snprintf(appendage, ap_size, "%c", *cursor);
+                }
+
+                token = appendage;
+                ++token_tracker;
+                ++cursor;
+            }
+        }
+
+        if (token_tracker > 0) {
+            // printf("processed buf[%d] = token: %s\n", tokens, token);
+            if (tokens < buf_size) {
+                buf[tokens] = token;
+                ++tokens;
+            }
+        }
+    }
+
+    // printf("token_split done, found(%d) tokens\n\n", tokens);
+    // return buf;
+    ub_tokens* result = malloc(sizeof(ub_tokens));
+
+    char** mbuf = malloc(sizeof(char**) * tokens + 1);
+    for (int b = 0; b < tokens; ++b) {
+        mbuf[b] = buf[b];
+    }
+
+    free(buf);
+
+    result->count = tokens;
+    result->tokens = mbuf;
+    // free(buf);
+
+    return result;
 }
 
 /**
@@ -183,8 +243,8 @@ int util_tokenize(char* src, char* delim, char** result) {
  * Then once you are done with fast cat appendages, you may discard the stack
  * pointer.
  */
-void util_cat(char** orig, char* src) {
-    // printf("dm_cat: appending(%s) to buf(%s)\n", src, buf);
+void ub_cat(char** orig, char* src) {
+    // printf("ub_cat: appending(%s) to buf(%s)\n", src, buf);
     char* buf = *orig;
     assert(buf != NULL);
 
@@ -198,9 +258,8 @@ void util_cat(char** orig, char* src) {
     // return --buf;
 }
 
-
-char* util_home_dir() {
-#ifdef _MSVC_VER
+char *ub_home_dir() {
+#ifdef WINDOWS_OS
     // Check environment variable first,
     // then fallback to passwd definition.
     char *ret = calloc(MAX_PATH, sizeof(char*));
@@ -213,7 +272,7 @@ char* util_home_dir() {
         return NULL;
     }
 #endif
-#ifdef _GNU_C_
+#ifdef UNIX_OS
     const char *homedir;
 
     // Check environment variable first,

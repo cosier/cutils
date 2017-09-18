@@ -13,8 +13,19 @@ set( CMAKE_C_STANDARD 11 )
 set( LIB_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Treat all warnings as intense errors.
-if(NOT MSVC)
-set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -Wextra")
+if(UNIX)
+  set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall -Wextra")
+  add_definitions("-DUNIX_OS")
+endif()
+
+if(MSVC)
+  add_definitions("-DWINDOWS_OS")
+elseif(APPLE)
+  add_definitions("-DAPPLE_OS")
+  find_library(cf_lib CoreFoundation)
+  set(UB_LIBS ${cf_lib})
+elseif(LINUX)
+  add_definitions("-DLINUX_OS")
 endif()
 
 file(GLOB_RECURSE SRC_C src/*.c)
@@ -30,14 +41,6 @@ set( ENABLE_TESTS $ENV{ENABLE_UB_TESTS} )
 if ("${ENABLE_TESTS}" STREQUAL "true")
   enable_testing ()
   add_subdirectory("tests")
-endif()
-
-if (APPLE)
-  find_library(cf_lib CoreFoundation)
-  set(UB_LIBS ${cf_lib})
-
-elseif(UNIX)
-  # We good..
 endif()
 
 target_link_libraries(${APP_LIB_NAME}x ${UB_LIBS})
